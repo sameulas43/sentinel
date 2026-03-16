@@ -202,11 +202,28 @@ def get_ohlcv(symbol: str, period: str = "3mo", interval: str = "1h") -> pd.Data
 # ─── INDICATEURS TECHNIQUES ───────────────────────────────
 def calc_rsi(series: pd.Series, period: int = 14) -> float:
     delta = series.diff()
-    gain  = delta.clip(lower=0).rolling(period).mean()
-    loss  = (-delta.clip(upper=0)).rolling(period).mean()
-    rs    = gain / loss.replace(0, np.nan)
-    rsi   = 100 - (100 / (1 + rs))
-    return round(float(rsi.iloc[-1]), 2) if not rsi.empty else 50.0
+def calc_rsi(series: pd.Series, period: int = 14) -> float:
+    """Calcule le RSI — compatible yfinance MultiIndex"""
+    try:
+        if isinstance(series, pd.DataFrame):
+            series = series.iloc[:, 0]
+        series = series.squeeze()
+        if not isinstance(series, pd.Series):
+            return 50.0
+        series = series.dropna()
+        if len(series) < period + 1:
+            return 50.0
+        delta = series.diff()
+        gain  = delta.clip(lower=0).rolling(period).mean()
+        loss  = (-delta.clip(upper=0)).rolling(period).mean()
+        rs    = gain / loss.replace(0, np.nan)
+        rsi   = 100 - (100 / (1 + rs))
+        val   = rsi.iloc[-1]
+        if isinstance(val, pd.Series):
+            val = val.iloc[0]
+        return round(float(val), 2) if not pd.isna(val) else 50.0
+    except Exception:
+        return 50.0
 
 def calc_ema(series: pd.Series, period: int) -> pd.Series:
     return series.ewm(span=period, adjust=False).mean()
@@ -220,7 +237,11 @@ def get_signal(symbol: str) -> dict:
     if df.empty or len(df) < 200:
         return {"action": "hold", "reason": "Données insuffisantes", "strength": 0}
 
-    close    = df["Close"]
+    # Gère MultiIndex yfinance (Close, Symbol)
+    if isinstance(df.columns, pd.MultiIndex):
+        df.columns = df.columns.droplevel(1)
+
+    close    = df["Close"].squeeze()
     ema50    = calc_ema(close, 50)
     ema200   = calc_ema(close, 200)
     rsi      = calc_rsi(close)
