@@ -13,7 +13,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from flask import Flask, request, jsonify
 from groq import Groq
@@ -48,7 +48,7 @@ def send_discord(title: str, fields: list, color: int = 0xC9A84C):
     embed = {
         "title": title, "color": color, "fields": fields,
         "footer": {"text": f"🔍 SENTINEL Skills Hunter • {now_str()}"},
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.now(timezone.utc).isoformat()
     }
     try:
         requests.post(DISCORD_WEBHOOK, json={"embeds": [embed]}, timeout=10)
@@ -234,10 +234,14 @@ def groq_relevance(title: str, desc: str) -> dict:
     """Groq évalue la pertinence pour SENTINEL"""
     verdict = ask_groq(
         f"Ressource : '{title}' — {desc[:200]}\n"
-        f"Utile pour un bot de DCA mensuel sur ETFs éthiques avec Interactive Brokers ? "
-        f"Réponds: PERTINENT ou NON-PERTINENT et une raison courte."
+        f"Est-ce utile pour AU MOINS UN de ces sujets : "
+        f"trading automatisé, ETF, portfolio, DCA, backtesting, "
+        f"Interactive Brokers, yfinance, Discord bot, Python finance, "
+        f"énergie propre, agriculture, métaux, investissement algorithmique ? "
+        f"Si oui → PERTINENT. Si complètement hors sujet → NON-PERTINENT. "
+        f"Une raison courte. Sois large dans ton jugement."
     )
-    relevant = "PERTINENT" in verdict.upper()
+    relevant = "NON-PERTINENT" not in verdict.upper()
     return {"relevant": relevant, "reason": verdict}
 
 # ─── SCAN SÉCURITÉ ────────────────────────────────────────
