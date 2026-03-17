@@ -9,7 +9,7 @@ Cerveau central du système.
 
 import os, json, time, requests, schedule, threading
 import yfinance as yf
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from flask import Flask, request, jsonify
 from groq import Groq
@@ -17,7 +17,22 @@ from groq import Groq
 # Import config
 import sys
 sys.path.append(os.path.dirname(__file__))
-from sentinel_config import *
+try:
+    from sentinel_config import *
+except:
+    pass
+
+# Lecture directe — fallback si config non chargé
+DISCORD_WEBHOOK  = os.getenv("DW_URL", os.getenv("DISCORD_WEBHOOK_URL", ""))
+GROQ_API_KEY     = os.getenv("LA", os.getenv("GROQ_API_KEY", ""))
+DISCORD_TOKEN    = os.getenv("BT", os.getenv("DISCORD_TOKEN", ""))
+DISCORD_CHANNEL_ID = os.getenv("BC", os.getenv("DISCORD_CHANNEL_ID", ""))
+AGENT_SECRET     = os.getenv("SS", os.getenv("SENTINEL_SECRET", "sentinel-secret-key"))
+GMAIL_ADDRESS    = os.getenv("MF", os.getenv("GMAIL_ADDRESS", ""))
+GMAIL_APP_PWD    = os.getenv("MP", os.getenv("GMAIL_APP_PASSWORD", ""))
+MANAGER_URL      = os.getenv("MANAGER_URL", "http://localhost:5001")
+SKILLS_URL       = os.getenv("SKILLS_URL", "http://localhost:5002")
+TRADING_URL      = os.getenv("TRADING_URL", "http://localhost:5003")
 
 # ─── INIT ─────────────────────────────────────────────────
 app    = Flask(__name__)
@@ -105,7 +120,7 @@ def send_discord(title: str, fields: list, color: int = 0xC9A84C, components: li
     embed = {
         "title": title, "color": color, "fields": fields,
         "footer": {"text": f"🛡️ SENTINEL Manager • {now_str()}"},
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.now(timezone.utc).isoformat()
     }
     payload = {"embeds": [embed]}
     if components:
