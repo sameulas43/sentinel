@@ -144,7 +144,11 @@ async def cmd_status(ctx):
     """Statut des 3 agents"""
     agents = {}
     for name, url in [("Manager", MANAGER_URL),
+                      ("Skills Hunter", os.getenv("SKILLS_URL", "")),
                       ("Trading", TRADING_URL)]:
+        if not url:
+            agents[name] = "⚠️ URL manquante"
+            continue
         try:
             r = requests.get(f"{url}/health",
                            headers={"X-Secret": AGENT_SECRET}, timeout=5)
