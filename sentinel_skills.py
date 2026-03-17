@@ -27,8 +27,8 @@ app   = Flask(__name__)
 groq  = Groq(api_key=GROQ_API_KEY)
 
 GITHUB_TOKEN  = os.getenv("GITHUB_TOKEN", "")
-GMAIL_ADDRESS = os.getenv("GMAIL_ADDRESS", "")      # ton@gmail.com
-GMAIL_APP_PWD = os.getenv("GMAIL_APP_PASSWORD", "") # App Password Gmail
+MAIL_ADDRESS = os.getenv("MAIL_ADDRESS", "")      # ton@gmail.com
+MAIL_PASSWORD = os.getenv("GMAIL_APP_PASSWORD", "") # App Password Gmail
 
 SEARCH_TOPICS = [
     "ib_insync interactive brokers python",
@@ -57,14 +57,14 @@ def send_discord(title: str, fields: list, color: int = 0xC9A84C):
 
 def send_email(subject: str, body_html: str, attachment_path: str = None):
     """Envoie un email Gmail avec pièce jointe optionnelle"""
-    if not GMAIL_ADDRESS or not GMAIL_APP_PWD:
-        print("⚠️ Email non configuré — GMAIL_ADDRESS ou GMAIL_APP_PASSWORD manquant")
+    if not MAIL_ADDRESS or not MAIL_PASSWORD:
+        print("⚠️ Email non configuré — MAIL_ADDRESS ou GMAIL_APP_PASSWORD manquant")
         return False
 
     try:
         msg = MIMEMultipart("mixed")
-        msg["From"]    = f"SENTINEL Skills Hunter <{GMAIL_ADDRESS}>"
-        msg["To"]      = GMAIL_ADDRESS
+        msg["From"]    = f"SENTINEL Skills Hunter <{MAIL_ADDRESS}>"
+        msg["To"]      = MAIL_ADDRESS
         msg["Subject"] = subject
 
         # Corps HTML
@@ -82,10 +82,10 @@ def send_email(subject: str, body_html: str, attachment_path: str = None):
 
         # Envoi via Gmail SMTP
         with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
-            smtp.login(GMAIL_ADDRESS, GMAIL_APP_PWD)
+            smtp.login(MAIL_ADDRESS, MAIL_PASSWORD)
             smtp.send_message(msg)
 
-        print(f"✅ Email envoyé → {GMAIL_ADDRESS}")
+        print(f"✅ Email envoyé → {MAIL_ADDRESS}")
         return True
 
     except Exception as e:
@@ -543,7 +543,7 @@ def run_search(topics: list = None):
 
     if email_sent:
         send_discord("📧 Email hebdomadaire envoyé", [
-            {"name": "📬 Destinataire", "value": GMAIL_ADDRESS or "Non configuré", "inline": True},
+            {"name": "📬 Destinataire", "value": MAIL_ADDRESS or "Non configuré", "inline": True},
             {"name": "📎 Pièce jointe", "value": f"WEEKLY-SUMMARY-{date}.md",       "inline": True},
             {"name": "📊 Contenu",      "value": f"{len(uniq)} skills + tableau sécurité", "inline": False},
         ], color=0x2ECC71)
