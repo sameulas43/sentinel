@@ -11,11 +11,11 @@ VERSION         = "1.0.0"
 
 # ─── DISCORD ──────────────────────────────────────────────
 DISCORD_WEBHOOK         = os.getenv("DISCORD_WEBHOOK_URL", "")
-DISCORD_TOKEN           = os.getenv("BOT_TOKEN", "")
-DISCORD_CHANNEL_ID      = os.getenv("CHANNEL_ID", "")
+DISCORD_TOKEN           = os.getenv("BOT_ACCESS_TOKEN", "")
+DISCORD_CHANNEL_ID      = os.getenv("BOT_CHANNEL", "")
 
 # ─── LLM — GROQ (gratuit) ─────────────────────────────────
-GROQ_API_KEY            = os.getenv("LLM_API_KEY", "")
+GROQ_API_KEY            = os.getenv("LLM_ACCESS", "")
 GROQ_MODEL              = "llama3-70b-8192"
 GROQ_MODEL_FAST         = "llama3-8b-8192"
 
@@ -26,8 +26,8 @@ TRADING_URL             = os.getenv("TRADING_URL", "http://localhost:5003")
 AGENT_SECRET            = os.getenv("SENTINEL_SECRET", "sentinel-secret-key")
 
 # ─── EMAIL ────────────────────────────────────────────────
-GMAIL_ADDRESS           = os.getenv("MAIL_ADDRESS", "")
-GMAIL_APP_PWD           = os.getenv("MAIL_PASSWORD", "")
+GMAIL_ADDRESS           = os.getenv("MAIL_FROM", "")
+GMAIL_APP_PWD           = os.getenv("MAIL_PASS", "")
 
 # ─── INTERACTIVE BROKERS ──────────────────────────────────
 IB_HOST                 = os.getenv("IB_HOST", "127.0.0.1")
