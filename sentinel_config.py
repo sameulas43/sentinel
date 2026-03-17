@@ -10,24 +10,24 @@ PROJECT_NAME    = "SENTINEL"
 VERSION         = "1.0.0"
 
 # ─── DISCORD ──────────────────────────────────────────────
-DISCORD_WEBHOOK         = os.getenv("DISCORD_WEBHOOK_URL", "")
-DISCORD_TOKEN           = os.getenv("BOT_ACCESS_TOKEN", "")
-DISCORD_CHANNEL_ID      = os.getenv("BOT_CHANNEL", "")
+DISCORD_WEBHOOK         = os.getenv("DW_URL", "")
+DISCORD_TOKEN           = os.getenv("BT", "")
+DISCORD_CHANNEL_ID      = os.getenv("BC", "")
 
 # ─── LLM — GROQ (gratuit) ─────────────────────────────────
-GROQ_API_KEY            = os.getenv("LLM_ACCESS", "")
-GROQ_MODEL              = "llama3-70b-8192"
-GROQ_MODEL_FAST         = "llama3-8b-8192"
+GROQ_API_KEY            = os.getenv("LA", "")
+GROQ_MODEL              = "llama-3.3-70b-versatile"   # Meilleur modèle Groq actuel
+GROQ_MODEL_FAST         = "llama-3.1-8b-instant"       # Rapide pour tâches simples
 
 # ─── INTER-AGENTS (HTTP) ──────────────────────────────────
 MANAGER_URL             = os.getenv("MANAGER_URL", "http://localhost:5001")
 SKILLS_URL              = os.getenv("SKILLS_URL",  "http://localhost:5002")
 TRADING_URL             = os.getenv("TRADING_URL", "http://localhost:5003")
-AGENT_SECRET            = os.getenv("SENTINEL_SECRET", "sentinel-secret-key")
+AGENT_SECRET            = os.getenv("SS", "sentinel-secret-key")
 
 # ─── EMAIL ────────────────────────────────────────────────
-GMAIL_ADDRESS           = os.getenv("MAIL_FROM", "")
-GMAIL_APP_PWD           = os.getenv("MAIL_PASS", "")
+GMAIL_ADDRESS           = os.getenv("MF", "")
+GMAIL_APP_PWD           = os.getenv("MP", "")
 
 # ─── INTERACTIVE BROKERS ──────────────────────────────────
 IB_HOST                 = os.getenv("IB_HOST", "127.0.0.1")
