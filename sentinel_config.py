@@ -23,7 +23,7 @@ GROQ_MODEL_FAST         = "llama3-8b-8192"        # Rapide pour tâches simples
 MANAGER_URL             = os.getenv("MANAGER_URL", "http://localhost:5001")
 SKILLS_URL              = os.getenv("SKILLS_URL",  "http://localhost:5002")
 TRADING_URL             = os.getenv("TRADING_URL", "http://localhost:5003")
-AGENT_SECRET            = os.getenv("AGENT_SECRET", "sentinel-secret-key")
+AGENT_SECRET            = os.getenv("SENTINEL_SECRET", "sentinel-secret-key")
 
 # ─── INTERACTIVE BROKERS ──────────────────────────────────
 IB_HOST                 = os.getenv("IB_HOST", "127.0.0.1")
